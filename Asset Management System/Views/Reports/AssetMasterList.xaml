@@ -1,0 +1,86 @@
+﻿<catel:UserControl x:Class="Asset_Management_System.Views.Reports.AssetMasterList"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+                   xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   xmlns:CSClasses="clr-namespace:CodeSphere.CSClasses;assembly=CodeSphere"
+                   xmlns:vm="clr-namespace:Asset_Management_System.ViewModels.Reports"
+                   xmlns:v="clr-namespace:Asset_Management_System.Views.Reports"
+                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                   xmlns:catel="http://catel.codeplex.com">
+    <catel:UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type vm:AssetMasterListItemViewModel}">
+                <v:AssetMasterListItem DataContext="{Binding}"/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </catel:UserControl.Resources>
+    <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
+    <catel:StackGrid>
+        <catel:StackGrid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*"/>
+        </catel:StackGrid.RowDefinitions>
+        <catel:StackGrid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
+        </catel:StackGrid.ColumnDefinitions>
+        <DockPanel Name="AssetListDockPanel" 
+                    Width="{Binding ActualWidth,ElementName=ItemCategoryListBorder}" 
+                    Margin="0,20,0,5">
+                <TextBlock Text="Asset List" FontSize="15" HorizontalAlignment="Left" DockPanel.Dock="Left"
+                       VerticalAlignment="Center" Margin="10,0"/> 
+            <Grid DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Command="{Binding ButtonCommandDeleteCategory}" Padding="3" Grid.Column="1" Margin="5,0"
+                    Background="Transparent">
+                    <StackPanel Orientation="Horizontal" Margin="0">
+                        <Rectangle Width="25" Height="25"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_list_delete}"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ButtonCommandAddCategory}" Padding="3"  Grid.Column="0" Margin="5,0"
+                        Background="Transparent" >
+                    <StackPanel Orientation="Horizontal" Margin="0" >
+                        <Rectangle Width="25" Height="25"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" 
+                         Visual="{StaticResource appbar_list_add_below}"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
+
+                </Button>
+            </Grid>
+        </DockPanel>
+        <!-- <CSClasses:CSClassesTransitioningContentControl Content="{Binding AssetListContent}" Grid.ColumnSpan="2"/>-->
+      
+        <ContentControl Content="{Binding AssetListContent}" Grid.RowSpan="2" MinWidth="100" />
+       
+        <Border BorderBrush="Beige" BorderThickness="2" Name="ItemCategoryListBorder">
+            <DataGrid ItemsSource="{Binding ItemCategoryCollection,UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Name="ItemCategoryList" 
+                      SelectedItem="{Binding ItemCategorySelected}"
+                      Margin="20,10" Style="{StaticResource AzureDataGrid}" CanUserAddRows="False" 
+                      CanUserDeleteRows="False" IsReadOnly="True" >
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Category"  Binding="{Binding ItemCategoryName}"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding ItemCategoryDescription}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+        
+    </catel:StackGrid>
+    </xctk:BusyIndicator>
+</catel:UserControl>

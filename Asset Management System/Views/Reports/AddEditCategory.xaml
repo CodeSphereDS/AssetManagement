@@ -1,0 +1,75 @@
+﻿<CSClasses:CSWindow x:Class="Asset_Management_System.Views.Reports.AddEditCategory"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:CSClasses="clr-namespace:CodeSphere.CSClasses;assembly=CodeSphere"
+                    xmlns:catelcontrols ="clr-namespace:Catel.Extensions.Controls;assembly=Catel.Extensions.Controls"
+                    Width="400" Height="300"
+                    WindowStartupLocation="CenterOwner"
+                    ShowTitleBar="False"
+                     ResizeMode="NoResize"
+                    EnableDWMDropShadow="True"
+                  xmlns:catel="http://catel.codeplex.com">
+    <Border BorderBrush="Azure" BorderThickness="3">
+        <catel:StackGrid>
+            <catel:StackGrid.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="20,0,10,0"/>
+                </Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="MinWidth" Value="200"/>
+                    <Setter Property="MaxWidth" Value="200"/>
+                    <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                    <Setter Property="Margin" Value="0,5"/>
+                </Style>
+            </catel:StackGrid.Resources>
+            <catel:StackGrid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </catel:StackGrid.RowDefinitions>
+            <catel:StackGrid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="1*"/>
+            </catel:StackGrid.ColumnDefinitions>
+
+            <TextBlock Text="Category"/>
+            <TextBox   Text="{Binding ItemCategoryName,UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="Description"/>
+            <TextBox   Text="{Binding ItemCategoryDescription}" TextWrapping="Wrap" AcceptsReturn="True" Height="100"
+                    ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto"
+                     VerticalContentAlignment="Top" />
+            <catel:EmptyRow Height="50"/>
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,5" Grid.ColumnSpan="2">
+                <Button Style="{DynamicResource MetroCircleButtonStyle}" Margin="10,0" Command="{Binding ButtonCommandSave}">
+                    <Viewbox Width="48" Height="48">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" 
+                                  Fill="Teal" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Button Style="{DynamicResource MetroCircleButtonStyle}" Margin="10,0" Command="{Binding ButtonCommandCancel}">
+                    <Viewbox Width="48" Height="48">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" 
+                                  Fill="Crimson" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+            </WrapPanel>
+        </catel:StackGrid>
+    </Border>
+
+
+
+</CSClasses:CSWindow>

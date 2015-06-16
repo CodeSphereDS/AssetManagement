@@ -1,0 +1,29 @@
+﻿<Application x:Class="Asset_Management_System.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="/Views/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Generic Catel theme -->
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/Catel.Extensions.Controls;component/themes/generic.xaml" />-->  
+                <ResourceDictionary Source="/Resources/MahAppsDatePicker.xaml"/>
+                <ResourceDictionary Source="/Resources/Icons.xaml"/>               
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Cobalt.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />               
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
+<!--http://modernuiicons.com/
+    http://www.entypo.com/
+    http://materialdesignicons.com/
+    "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan",
+    "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber", "Yellow", 
+    "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna"
+https://github.com/MahApps/MahApps.Metro/blob/master/samples/MetroDemo/ExampleViews/ButtonsExample.xaml-->
+<!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />-->
