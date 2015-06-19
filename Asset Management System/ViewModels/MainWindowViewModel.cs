@@ -19,6 +19,8 @@ namespace Asset_Management_System.ViewModels
         //private Flyouts.AppSettingsViewModel _appSettingsViewModel;
         private Reports.AssetMasterListViewModel _AssetMasterListViewModel;
         private IMessageMediator _messagemediator;
+        private IMessageService _messageservice;
+        private IUIVisualizerService _uivisualizer;
 
         #region constructor
         public MainWindowViewModel()
@@ -33,10 +35,13 @@ namespace Asset_Management_System.ViewModels
             CommandRefreshMainContent = new Command(OnCommandRefreshMainContentExecute, OnCommandRefreshMainContentCanExecute);
             CommandShowAssetList = new Command(OnCommandShowAssetListExecute, OnCommandShowAssetListCanExecute);
 
-            testcommand = new Command(OntestcommandExecute);
+            CommandCloseWindow = new Command(OnCommandCloseWindowExecute);
 
             var dependencyResolver = this.GetDependencyResolver();
+            _messageservice= dependencyResolver.Resolve<IMessageService>();
             _messagemediator = dependencyResolver.Resolve<IMessageMediator>();
+            _uivisualizer = dependencyResolver.Resolve<IUIVisualizerService>();
+
             _messagemediator.Register<bool>(this, MainWindowIsBusy, "MainWindowIsBusy");
             
             MainContent = new Reports.AssetManagementSystemBlankViewModel();
@@ -195,10 +200,7 @@ namespace Asset_Management_System.ViewModels
         /// Gets the  CommandShowAssetList command.
         /// </summary>
         public Command CommandShowAssetList { get; private set; }
-
-        // TODO: Move code below to constructor
-
-        // TODO: Move code above to constructor
+      
 
         /// <summary>
         /// Method to check whether the  CommandShowAssetList command can be executed.
@@ -418,28 +420,30 @@ namespace Asset_Management_System.ViewModels
             FlyoutContent = _addNewUserViewModel;
             ShowFlyout = true;
         }
+      
 
         /// <summary>
-        /// Gets the testcommand command.
-        /// </summary>
-        public Command testcommand { get; private set; }
+/// Gets the CommandCloseWindow command.
+/// </summary>
+public Command CommandCloseWindow { get; private set; }
 
-        // TODO: Move code below to constructor
+/// <summary>
+/// Method to invoke when the CommandCloseWindow command is executed.
+/// </summary>
+private async void OnCommandCloseWindowExecute()
+{
+   
+    //if (await _messageservice.Show("Are you sure you want to do this?", "Are you sure?", MessageButton.YesNo) == MessageResult.Yes)
+    //{
+    //    this.CloseViewModel(true);
+    //}
 
-        // TODO: Move code above to constructor
-
-        /// <summary>
-        /// Method to invoke when the testcommand command is executed.
-        /// </summary>
-        private void OntestcommandExecute()
-        {
-
-            var d = this.GetDependencyResolver();
-            var service = d.Resolve<IUIVisualizerService>();
-
-            service.Show(new testviewmodel());
-        }
-
+    if(await _uivisualizer.ShowDialogAsync<ViewModels.Windows.ConfirmWindowViewModel>()==true)
+    {
+        await this.Close();
+    }
+   
+}
         #endregion Commands
 
         #region Methods
@@ -452,8 +456,7 @@ namespace Asset_Management_System.ViewModels
 
         protected override async Task Close()
         {
-            // TODO: unsubscribe from events here
-
+         
             await base.Close();
         }
 

@@ -12,7 +12,9 @@
 
         public override string Title { get { return "Asset Management System"; } }
         public string Client { get { return "RAK & ACO General and Allied Services, Inc.";} }
-        
+        public string ClientAddress { get { return "2nd Floor, Metroovi Building";} }
+        public string ClientCity { get {return "9500 General Santos City";}}
+        public string ClientCountry { get { return "Philippines"; } }
 
         protected override async Task Initialize()
         {

@@ -19,6 +19,7 @@ using Asset_Management_System.ViewModels.Reports;
 using Asset_Management_System.Views.Reports;
 using Asset_Management_System.ViewModels;
 using Asset_Management_System.Views;
+using Catel.Messaging;
 
 namespace Asset_Management_System
 {
@@ -29,7 +30,7 @@ namespace Asset_Management_System
     public partial class App : Application
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
+        private IMessageMediator _messageservice;
         protected override void OnStartup(StartupEventArgs e)
         {
 #if DEBUG
@@ -50,6 +51,9 @@ namespace Asset_Management_System
 
             //viewLocator.Register(typeof(ViewModels.Adorner.CSAdornerViewModel), typeof(Views.Adorner.CSAdorner));
 
+            var dep = this.GetDependencyResolver();
+           _messageservice = dep.Resolve<IMessageMediator>();
+           _messageservice.SendMessage<bool>(true, "MainWindowIsBusy");
 
             Log.Info("Start of SplashScreen");
             var splashScreenService = ServiceLocator.Default.ResolveType<ISplashScreenService>();
@@ -58,11 +62,19 @@ namespace Asset_Management_System
             splashScreenService.Enqueue(new ActionTask("Creating Style Helpers", x => CreateStyleHelpers(x)));
             splashScreenService.Enqueue(new ActionTask("Registering ViewModels", (x) => RegisterViewModels(x)));
 
-            splashScreenService.CommitAsync<ViewModels.Windows.CSSplashScreenViewModel>();
+            splashScreenService.CommitAsync<ViewModels.Windows.CSSplashScreenViewModel>(OnSplashScreenLoaded);
 
             Log.Info("Calling base.OnStartup");
 
+          
+
             base.OnStartup(e);
+               
+        }
+
+        private void OnSplashScreenLoaded()
+        {        
+            _messageservice.SendMessage<bool>(false, "MainWindowIsBusy");
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -104,8 +116,6 @@ namespace Asset_Management_System
             var viewLocator = ServiceLocator.Default.ResolveType<IViewLocator>();
             var viewModelLocator = ServiceLocator.Default.ResolveType<IViewModelLocator>();
 
-
-
             viewModelLocator.Register(typeof(About), typeof(AboutViewModel));
             viewLocator.Register(typeof(AboutViewModel), typeof(About));
 
@@ -119,10 +129,7 @@ namespace Asset_Management_System
             viewLocator.Register(typeof(AddNewUserViewModel), typeof(AddNewUser));
 
             viewModelLocator.Register(typeof(AppSettings), typeof(AppSettingsViewModel));
-            viewLocator.Register(typeof(AppSettingsViewModel), typeof(AppSettings));
-
-            //viewModelLocator.Register(typeof(Views.Adorner.CSAdorner), typeof(ViewModels.Adorner.CSAdornerViewModel));
-            //viewLocator.Register(typeof(ViewModels.Adorner.CSAdornerViewModel), typeof(Views.Adorner.CSAdorner));
+            viewLocator.Register(typeof(AppSettingsViewModel), typeof(AppSettings));         
 
             viewModelLocator.Register(typeof(SignOut), typeof(SignOutViewModel));
             viewLocator.Register(typeof(SignOutViewModel), typeof(SignOut));
@@ -137,17 +144,13 @@ namespace Asset_Management_System
             viewLocator.Register(typeof(AddEditAssetWindowViewModel), typeof(AddEditAssetWindow));
 
             viewModelLocator.Register(typeof(AssetMasterListItem), typeof(AssetMasterListItemViewModel));
-            viewLocator.Register(typeof(AssetMasterListItemViewModel), typeof(AssetMasterListItem));
-
-            viewModelLocator.Register(typeof(test),typeof(testviewmodel));
-            viewLocator.Register(typeof(testviewmodel),typeof(test));
-
-            viewModelLocator.Register(typeof(test1),typeof(test1viewmodel));
-            viewLocator.Register(typeof(test1viewmodel),typeof(test1));
+            viewLocator.Register(typeof(AssetMasterListItemViewModel), typeof(AssetMasterListItem));           
 
             viewModelLocator.Register(typeof(AddEditCategory), typeof(AddEditCategoryViewModel));
             viewLocator.Register(typeof(AddEditCategoryViewModel), typeof(AddEditCategory));
 
+            viewModelLocator.Register(typeof(ConfirmWindow), typeof(ConfirmWindowViewModel));
+            viewLocator.Register(typeof(ConfirmWindowViewModel), typeof(ConfirmWindow));
         }
     }
 }

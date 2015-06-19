@@ -2,8 +2,8 @@
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://catel.codeplex.com"
-                   xmlns:CSClasses="clr-namespace:CodeSphere.CSClasses;assembly=CodeSphere" Width="430"
-                   Height="410" IsCloseButtonEnabled="True" 
+                   xmlns:CSClasses="clr-namespace:CodeSphere.CSClasses;assembly=CodeSphere" Width="400"
+                   Height="350" IsCloseButtonEnabled="True" 
                    WindowStartupLocation="CenterScreen"
                    IsMaxRestoreButtonEnabled="False" 
                    IsMinButtonEnabled="False" 
@@ -13,7 +13,7 @@
                    VerticalAlignment="Top"
                    >
 
-    <catel:StackGrid VerticalAlignment="Center">
+    <catel:StackGrid VerticalAlignment="Center" HorizontalAlignment="Center">
         <catel:StackGrid.Resources>           
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0,3" />
@@ -30,8 +30,8 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
         </catel:StackGrid.ColumnDefinitions>
-        <catel:EmptyCell/>
-        <RichTextBox IsReadOnly="True" Width="305" HorizontalAlignment="Left" BorderThickness="0" VerticalAlignment="Center">
+        <Image Source="/Resources/Images/logoMetro.jpg" Width="100" Height="100" VerticalAlignment="Top"/>
+        <RichTextBox IsReadOnly="True" Width="300" BorderThickness="0" >
             <FlowDocument>
                 <Paragraph FontSize="14" FontWeight="Bold" FontFamily="Tahoma">
                     <TextBlock Text="{Binding Title}"/>                  
@@ -40,45 +40,19 @@
                     <TextBlock Text="{Binding Client}" />                 
                 </Paragraph>
                 <Paragraph FontSize="12" FontFamily="Tahoma">
-                    2nd Floor, Metroovi Building
+                    <TextBlock Text="{Binding ClientAddress}" />
                 </Paragraph>
                 <Paragraph FontSize="12" FontFamily="Tahoma">
-                    9500 General Santos City
+                    <TextBlock Text="{Binding ClientCity}" />
                 </Paragraph>
                 <Paragraph FontSize="12" FontFamily="Tahoma">
-                    Philippines
+                     <TextBlock Text="{Binding ClientCountry}" />                    
                 </Paragraph>
                 <Paragraph FontSize="11" FontFamily="Tahoma">
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <catel:EmptyRow Height="30"/>
-        <Image Source="/Resources/CodeSphereLogo.jpg" Width="110" Height="110" HorizontalAlignment="Right"/>
-        
-        <RichTextBox IsReadOnly="True" Width="225" HorizontalAlignment="Left" BorderThickness="0" VerticalAlignment="Center">
-            <FlowDocument>
-                <Paragraph FontSize="12"  FontWeight="Bold" FontFamily="Tahoma">
-                    CodeSphere Data Solutions
-                </Paragraph>
-                <Paragraph FontSize="11" FontFamily="Tahoma">
-                    58-A Quirino Avenue   
-                </Paragraph>
-                <Paragraph FontSize="11" FontFamily="Tahoma">
-                    9500 General Santos City
-                </Paragraph>
-                <Paragraph FontSize="11" FontFamily="Tahoma">
-                    Philippines
-                </Paragraph>
-                <Paragraph FontSize="11" FontFamily="Tahoma" Margin="0,15,0,0">
-                    http://www.CodeSphereDataSolutions.com                 
-                </Paragraph>
-                <Paragraph FontSize="10" FontFamily="Tahoma" >
-                    Copyright © 2015 CodeSphere Data Solutions. All rights reserved.
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-
-        <catel:EmptyRow Height="40"/>
+        <catel:EmptyRow Height="30"/> 
         <Button  Width="100" Height="25" Grid.ColumnSpan="2" Content="OK" Command="{Binding CommandClose}"/>       
     </catel:StackGrid>
     
