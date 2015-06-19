@@ -1,0 +1,248 @@
+﻿<CSClasses:CSWindow x:Class="Asset_Management_System.Views.Reports.AddEditAssetWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                  
+                  xmlns:CSClasses="clr-namespace:CodeSphere.CSClasses;assembly=CodeSphere"
+                  xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"               
+                   Width="600" Height="700"
+                   
+                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:itemstatus="clr-namespace:Data.Model;assembly=Data"
+                    WindowStartupLocation="CenterScreen"
+                    ShowTitleBar="False"
+                     ResizeMode="NoResize"
+                    EnableDWMDropShadow="True"
+                  xmlns:catel="http://catel.codeplex.com">
+    <!--ShowTitleBar="False" -->
+    <!--EnableDWMDropShadow="True"-->
+    <CSClasses:CSWindow.Resources>
+        <ObjectDataProvider x:Key="ItemStatustoenum" 
+                            MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="itemstatus:ItemStatus"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </CSClasses:CSWindow.Resources>
+    <Border BorderBrush="Azure" BorderThickness="3">
+        <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
+        <catel:StackGrid>
+            <catel:StackGrid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="auto"/>
+            </catel:StackGrid.RowDefinitions>
+        <DockPanel Margin="20,20,20,10">
+            <TextBlock Text="{Binding Title}" Margin="5,0" FontSize="13" FontWeight="Bold"/>
+            <WrapPanel FlowDirection="LeftToRight" Orientation="Horizontal" HorizontalAlignment="Right" >
+                    <DatePicker Height="30" Margin="15,0"  SelectedDate="{Binding DateAdded,StringFormat='{}{0:MMM d, yyyy}'}">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Control.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, 
+                                                StringFormat = '{}{0:MMM dd, yyyy}',RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Viewbox Width="48" Height="48" >
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,
+                              19V5C21,3.89 20.1,3 19,3M16.5,16.25C16.5,14.75 13.5,
+                              14 12,14C10.5,14 7.5,14.75 7.5,16.25V17H16.5M12,12.25A2.25,2.25 0 0,
+                              0 14.25,10A2.25,2.25 0 0,0 12,7.75A2.25,2.25 0 0,0 9.75,10A2.25,2.25 0 0,0 12,12.25Z" 
+                              Fill="CadetBlue" />
+                                <Canvas.ToolTip>
+                                    <TextBlock Text="User"/>
+                                </Canvas.ToolTip>
+                            </Canvas>
+                        </Viewbox>
+                        <TextBlock Text="{Binding AddedBy.Username}" Margin="5,-2,0,0"/>
+                    </StackPanel>             
+                </WrapPanel>
+        </DockPanel>
+            
+        <catel:StackGrid Margin="10,0">
+            <catel:StackGrid.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="20,0,10,0"/>
+                </Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="MinWidth" Value="200"/>
+                    <Setter Property="MaxWidth" Value="200"/>
+                    <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                    <Setter Property="Margin" Value="0,5"/>
+                </Style>
+                <Style TargetType="{x:Type metro:SplitButton}">
+                            <Setter Property="Margin" Value="0,5"/>
+                        </Style>
+            </catel:StackGrid.Resources>
+            <catel:StackGrid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                </catel:StackGrid.RowDefinitions>
+            <catel:StackGrid.ColumnDefinitions>
+                <ColumnDefinition  Width="auto" />
+                <ColumnDefinition Width="auto"/>
+            </catel:StackGrid.ColumnDefinitions>            
+            <TextBlock Text="Category"/>
+            <metro:SplitButton ItemsSource="{Binding ItemCategory}" SelectedItem="{Binding ItemCategoryID}">
+                <metro:SplitButton.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding ItemCategoryName}"/>
+                    </DataTemplate>
+                </metro:SplitButton.ItemTemplate>
+            </metro:SplitButton>
+            <TextBlock Text="Brand"/>
+            <TextBox metro:TextBoxHelper.Watermark="ItemBrandName" metro:TextBoxHelper.ClearTextButton="True" 
+                 Text="{Binding ItemCategoryName,UpdateSourceTrigger=PropertyChanged}" />
+            
+            <TextBlock Text="Model"/>
+            <TextBox metro:TextBoxHelper.Watermark="Model" AcceptsReturn="True" 
+                     metro:TextBoxHelper.ClearTextButton="True"
+                 Text="{Binding ItemBrandModel}"/>
+            
+            <TextBlock Text="Serial No."/>
+            <TextBox metro:TextBoxHelper.Watermark="Serial Number" metro:TextBoxHelper.ClearTextButton="True"
+                 Text="{Binding ItemSerialNumber}"/>
+
+            <TextBlock Text="Description" VerticalAlignment="Top"/>
+            
+            <TextBox metro:TextBoxHelper.Watermark="ItemDetails" TextWrapping="Wrap" AcceptsReturn="True" Height="100"
+                     ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto"
+                     VerticalContentAlignment="Top"
+                 Text="{Binding ItemDetails}"/>        
+            <TextBlock Text="Item Status"/>
+                    <metro:SplitButton ItemsSource="{Binding Source={StaticResource ItemStatustoenum}}" 
+                                       SelectedItem="{Binding ItemStatus}"
+                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Left">
+                        <metro:SplitButton.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"/>
+                            </DataTemplate>
+                        </metro:SplitButton.ItemTemplate>
+                <!--<metro:SplitButton.ItemsSource>
+                    <x:Array Type="sys:String">
+                        <sys:String>Pending</sys:String>
+                        <sys:String>Approved</sys:String>
+                        <sys:String>Disposed</sys:String>
+                        <sys:String>Unknown</sys:String>
+                    </x:Array>
+                </metro:SplitButton.ItemsSource>-->
+            </metro:SplitButton>                
+                <TextBlock Text="Requested by"/>
+                <metro:SplitButton ItemsSource="{Binding UsersCollection}" 
+                                   SelectedItem="{Binding RequestedBy}" VerticalContentAlignment="Center">                   
+                    <metro:SplitButton.ItemTemplate>
+                        <DataTemplate>                          
+                            <TextBlock Text="{Binding Username}"/>
+                        </DataTemplate>
+                    </metro:SplitButton.ItemTemplate>
+                </metro:SplitButton>
+                    <TextBlock Text="Approved by"/>
+                    <metro:SplitButton ItemsSource="{Binding UsersCollection}" 
+                                   SelectedItem="{Binding ApprovedBy}" VerticalContentAlignment="Center">
+                        <metro:SplitButton.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Username}"/>
+                            </DataTemplate>
+                        </metro:SplitButton.ItemTemplate>
+                    </metro:SplitButton>
+                    <TextBlock Text="Date purchased"/>
+                    <DatePicker Height="30" Margin="0,5"  DisplayDate="{x:Static sys:DateTime.Now}" SelectedDate="{Binding DatePurchased}">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Control.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, 
+                                                StringFormat = '{}{0:MMM dd, yyyy}',RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <TextBlock Text="Warranty expiration"/>
+                    <DatePicker Height="30" Margin="0,5"  DisplayDate="{x:Static sys:DateTime.Now}" SelectedDate="{Binding WarrantyExpiration}">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Control.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, 
+                                                StringFormat = '{}{0:MMM dd, yyyy}',RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <TextBlock Text="Date added"/>
+                    <DatePicker Height="30" Margin="0,5"  DisplayDate="{x:Static sys:DateTime.Now}" SelectedDate="{Binding DateAdded}">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Control.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, 
+                                                StringFormat = '{}{0:MMM dd, yyyy}',RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <TextBlock Text="Assigned to"/>
+                    <metro:SplitButton ItemsSource="{Binding UsersCollection}" 
+                                   SelectedItem="{Binding AssignedTo}" VerticalContentAlignment="Center">
+                        <metro:SplitButton.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Username}"/>
+                            </DataTemplate>
+                        </metro:SplitButton.ItemTemplate>
+                    </metro:SplitButton>
+
+                </catel:StackGrid>           
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,5">
+                <Button Style="{DynamicResource MetroCircleButtonStyle}" Margin="10,0" Command="{Binding ButtonCommandSave}">
+                    <Viewbox Width="48" Height="48">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" 
+                                  Fill="Teal" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Button Style="{DynamicResource MetroCircleButtonStyle}" Margin="10,0" Command="{Binding ButtonCommandCancel}">
+                    <Viewbox Width="48" Height="48">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" 
+                                  Fill="Crimson" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+            </WrapPanel>
+        </catel:StackGrid>
+        </xctk:BusyIndicator>
+    </Border>
+</CSClasses:CSWindow>

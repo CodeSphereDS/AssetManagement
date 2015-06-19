@@ -1,0 +1,39 @@
+﻿<CSClasses:CSWindow x:Class="Asset_Management_System.Views.Windows.SignOut"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:CSClasses="clr-namespace:CodeSphere.CSClasses;assembly=CodeSphere"
+                  ShowTitleBar="False"
+                    Height="150" 
+                    Width="300"
+                    WindowStyle="None" 
+                    IsMinButtonEnabled="False" IsCloseButtonEnabled="False" IsMaxRestoreButtonEnabled="False"
+                  BorderThickness="1"                  
+                  BorderBrush="LightBlue"
+                  WindowStartupLocation="CenterScreen"
+                  Topmost="True"
+                  xmlns:catel="http://catel.codeplex.com">
+    <catel:StackGrid HorizontalAlignment="Center" >
+        <catel:StackGrid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </catel:StackGrid.RowDefinitions>
+        <catel:StackGrid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+        </catel:StackGrid.ColumnDefinitions>
+        <TextBlock HorizontalAlignment="Left" FontSize="18" FontFamily="tahoma" FontWeight="Bold" Foreground="CadetBlue" 
+                   Text="Logout" Margin="-30,0,0,20"/>
+        <TextBlock HorizontalAlignment="Center" FontSize="13" 
+                   Text="Are you sure you want to logout?" Margin="10"/>
+        <catel:EmptyRow Height="20"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="OK" Command="{Binding CommandClose}" Margin="10" Width="50"  
+                    FocusVisualStyle="{x:Null}" />
+            <Button Content="Cancel" Command="{Binding CommandCancel}" Margin="10" Width="50" 
+                    FocusVisualStyle="{x:Null}"/>
+        </StackPanel>
+     
+    </catel:StackGrid>
+    
+</CSClasses:CSWindow>

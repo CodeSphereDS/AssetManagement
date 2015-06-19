@@ -1,0 +1,85 @@
+﻿<catel:UserControl x:Class="Asset_Management_System.Views.Reports.AssetMasterListItem"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"                  
+                   xmlns:catel="http://catel.codeplex.com">
+    <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
+    <catel:StackGrid Name="ItemListDetailsGrid" >
+        <catel:StackGrid.Resources>           
+            <CollectionViewSource x:Key="datagridsource" Source="{Binding Path=ItemCollection}">                
+            </CollectionViewSource>            
+        </catel:StackGrid.Resources>
+        <catel:StackGrid.RowDefinitions>          
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+        </catel:StackGrid.RowDefinitions>
+        <WrapPanel FlowDirection="RightToLeft" VerticalAlignment="Bottom" Name="WrapPanelAddEdit" Margin="0,10,0,5">
+            <Button Command="{Binding ButtonCommandDeleteItem}" HorizontalAlignment="Right" Padding="3" Margin="15,5" 
+                    Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="30" Height="25"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_app_minus}"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding ButtonCommandEditItem}" HorizontalAlignment="Right" Padding="3" Margin="0,0,0,5" 
+                    Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="30" Height="30"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_edit_box}"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding ButtonCommandAddItem}" HorizontalAlignment="Right" Padding="3" Margin="15,5"
+                    Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="30" Height="25" 
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" 
+                         Visual="{StaticResource appbar_app_plus}"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+
+            </Button>
+        </WrapPanel>
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Source={StaticResource datagridsource}}"                
+                      SelectedItem="{Binding ItemSelected}"
+                      CanUserDeleteRows="False" CanUserAddRows="False" IsReadOnly="True">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="FontSize" Value="12"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Brand" Binding="{Binding ItemBrandName,UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Model" Binding="{Binding ItemBrandModel}"/>
+                <DataGridTextColumn Header="Serial" Binding="{Binding ItemSerialNumber}"/>
+                <DataGridTextColumn Header="Details" Binding="{Binding ItemDetails}"/>
+                <DataGridTextColumn Header="Requested By" Binding="{Binding RequestedBy.Username}"/>
+                <DataGridTextColumn Header="Approved By" Binding="{Binding ApprovedBy.Username}"/>
+                <DataGridTextColumn Header="Assigned To" Binding="{Binding AssignedTo.Username}"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding ItemStatus}"/>
+                <DataGridTextColumn Header="Date Purchased" Binding="{Binding DatePurchased, StringFormat='{}{0:MMM d, yyyy}'}"/>
+                <DataGridTextColumn Header="Warranty Expiration" Binding="{Binding WarrantyExpiration,StringFormat='{}{0:MMM d, yyyy}'}"/>
+                <DataGridTextColumn Header="Date Added" Binding="{Binding DateAdded,StringFormat='{}{0:MMM d, yyyy}'}"/>
+                <DataGridTextColumn Header="Last Modified" Binding="{Binding LastDateModified,StringFormat='{}{0:MMM d, yyyy}'}"/>
+                <DataGridTextColumn Header="Last Modified By" Binding="{Binding LastModifiedBy.Username}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock Text="{Binding ItemBrandName,UpdateSourceTrigger=PropertyChanged}"/>
+    </catel:StackGrid>
+    </xctk:BusyIndicator>
+
+</catel:UserControl>
