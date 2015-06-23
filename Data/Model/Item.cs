@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Catel.Data;
 
 namespace Data.Model
 {
-    public class Item 
+    public class Item
     {
-        public virtual int ItemID{get;set;}
+        public virtual int ItemID { get; set; }
         public virtual string ItemBrandName { get; set; }
         public virtual string ItemBrandModel { get; set; }
         public virtual string ItemSerialNumber { get; set; }
@@ -25,16 +24,15 @@ namespace Data.Model
         public virtual DateTime? DateAdded { get; set; }
         public virtual DateTime? LastDateModified { get; set; }
         public virtual User LastModifiedBy { get; set; }
-        public virtual IList<User> Users { get;set; }
-      
-       public Item()
-       {
-           Users = new List<User>();            
-       }
-       public virtual Item ShallowCopy()
-       {
-           return (Item)this.MemberwiseClone();
-       }
-        
+        public virtual IList<User> Users { get; set; }
+
+        public Item()
+        {
+            Users = new List<User>();
+        }
+        public virtual Item ShallowCopy()
+        {
+            return (Item)this.MemberwiseClone();
+        }
     }
 }

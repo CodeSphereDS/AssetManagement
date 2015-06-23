@@ -6,6 +6,13 @@
                    Padding="20,20" Width="350" >
 
     <catel:StackGrid>
+        <catel:StackGrid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="Margin" Value="5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </catel:StackGrid.Resources>
         <catel:StackGrid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -17,11 +24,16 @@
             <ColumnDefinition Width="auto"/>            
             <ColumnDefinition Width="1*"/>
         </catel:StackGrid.ColumnDefinitions>
-        <TextBlock Text="Username" Margin="10"/>
+        <TextBlock Text="Username" />
         <TextBox Text="{Binding Username,UpdateSourceTrigger=PropertyChanged}" Margin="10,10" metro:TextBoxHelper.Watermark="Username"/>        
-        <TextBlock Text="Password" Margin="10"/>
+        <TextBlock Text="Password" />
         <TextBox Text="{Binding Password,UpdateSourceTrigger=PropertyChanged}" Margin="10,10" metro:TextBoxHelper.Watermark="Password"/>
-            <catel:EmptyRow Height="20"/>
+        <TextBlock Text="Userlevel"/>
+        <metro:SplitButton ItemsSource="{Binding Userlevels}" Name="UserlevelsSplitButton" Margin="10,10"
+                           SelectedIndex="{Binding Userlevel}" >
+           
+        </metro:SplitButton>
+        <catel:EmptyRow Height="20"/>
         <catel:EmptyCell/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button  Content="Save" Width="90" Margin="5,20" Command="{Binding ButtonSave}"/>

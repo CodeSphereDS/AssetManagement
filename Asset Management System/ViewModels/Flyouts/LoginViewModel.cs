@@ -10,23 +10,24 @@ using Data.Mapping;
 using NHibernate.Criterion;
 using System.Linq;
 using System.ComponentModel;
-
+using Catel.Messaging;
 
 namespace Asset_Management_System.ViewModels.Flyouts
 {
     public class LoginViewModel : ViewModelBase
     {
-        //public MainWindowViewModel _MainWindowViewModel;
+        private IMessageMediator _messagemediator;
+        private IUIVisualizerService _uivisualizer;
         public LoginViewModel(User user)           
         {
             User = user;
             if (!User.UserIsAuthenticated) Title = "Login";
+           
+            CommandLogin = new Command(OnCommandLoginExecute, OnCommandLoginCanExecute);
 
-            System.Diagnostics.Debug.WriteLine(string.Format("value of user is {0}",user.Username));
-            CommandLogin = new Command(OnCommandLoginExecute, OnCommandLoginCanExecute);          
-            CommandAddNewUser = new Command(OnCommandAddNewUserExecute, OnCommandAddNewUserCanExecute);
-
-            
+            var dep = this.GetDependencyResolver();
+            _messagemediator = dep.Resolve<IMessageMediator>();
+            _uivisualizer = dep.Resolve<IUIVisualizerService>();
           
         }
         #region Properties
@@ -172,131 +173,31 @@ namespace Asset_Management_System.ViewModels.Flyouts
                     var result = (User)ea.Result;
                     if(result!=null)
                     {
-                        //UserIsAuthenticated = true; //add invalidlogin
-                       // Title = "Logout";
                         var main = this.ParentViewModel as MainWindowViewModel;
                         main.UserIsAuthenticated = true;
                         main.Username = result.Username;
                         main.Password = result.Password;
                         main.CommandCloseFlyout.Execute();
+                       
+                    }
+                    else
+                    {
+                        var viewmodel = new ViewModels.Windows.InvalidLoginViewModel();
+                        _uivisualizer.ShowDialog(viewmodel);
                     }
                     IsBusy = false;
+                    _messagemediator.SendMessage<bool>(false, "MainWindowFlyoutIsBusy");
                 }
                 );
 
             IsBusy = true;
+            _messagemediator.SendMessage<bool>(true,"MainWindowFlyoutIsBusy");
             
-            worker.RunWorkerAsync(User);
-
-            //var t = new Task<bool>(() => 
-            //{
-
-            //    User user = new User();
-            //    user.Username = this.Username;
-            //    user.Password = this.Password;
-            //   using (var session = NHibernateSession.OpenSession())
-            //   {
-            //       var r = session.CreateCriteria<User>()
-            //            .Add(Restrictions.Conjunction()
-            //                .Add(Restrictions.Eq("Username", user.Username))
-            //                .Add(Restrictions.Eq("Password", user.Password))
-            //                ).List<User>()
-            //                .FirstOrDefault<User>();
-
-            //      if (r!=null)
-            //      {
-            //          return true;
-            //      }
-            //   }
-            //   return false;
-            //});
-
-            //t.RunSynchronously();
-
-            //var dep = this.GetDependencyResolver();
-            //var viewLocator = dep.Resolve<IViewLocator>();
-            //viewLocator.Register(typeof(Flyouts.BusyIndicatorViewModel), typeof(Views.Flyouts.BusyIndicator));
-
-            //var viewModelLocator = dep.Resolve<IViewModelLocator>();
-            //viewModelLocator.Register(typeof(Views.Flyouts.BusyIndicator), typeof(ViewModels.Flyouts.BusyIndicatorViewModel));
-
-            //var waitService = dep.Resolve<ISplashScreenService>();
-
-            //waitService.Enqueue(new Catel.MVVM.Tasks.ActionTask("Login user", tracker =>
-            //    {
-            //        tracker.UpdateStatus("Authenticating user", true);
-            //        System.Threading.Thread.Sleep(2000);
-
-            //    }));
-
-            //waitService.Commit<ViewModels.Flyouts.BusyIndicatorViewModel>();
-
-
-            ////MessageBoxResult result = MessageBox.Show("Login Button is Pressed!",null,MessageBoxButton.OK);    
-            //var viewModel = new Windows.InvalidLoginViewModel();
-            //var dependencyResolver =   this.GetDependencyResolver();
-            //var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
-            //if (!uiVisualizerService.IsRegistered(typeof(Windows.InvalidLoginViewModel)))
-            //{
-            //    uiVisualizerService.Register(typeof(Windows.InvalidLoginViewModel), typeof(Views.Windows.CSSplashScreen));
-            //}
-
-            //DataAccessLayer.Model.Role role = new DataAccessLayer.Model.Role();
-            //role.Username = this.Username;
-            //role.Password = this.Password;
-
-            //DataAccessLayer.Model.Role r = new DataAccessLayer.Model.Role();
-            //DataAccessLayer.Repository.RRole getr = new DataAccessLayer.Repository.RRole();
-            //r = getr.GetRole(role);
-            //if (r != null)
-            //{
-            //    var main = this.ParentViewModel as MainWindowViewModel;
-            //    main.Role = new DataAccessLayer.Model.Role();
-
-            //    main.Role.Username = r.Username;
-            //    main.Role.Password = r.Password;
-
-            //    System.Diagnostics.Debug.WriteLine("User is authenticated");
-            //    main.ShowFlyout = false;
-            //}
-
-            //else
-            //{
-            //    uiVisualizerService.ShowDialog(viewModel);
-            //}
-
+            worker.RunWorkerAsync(User);          
 
         }
-
-        /// <summary>
-        /// Gets the CommandAddNewUser command.
-        /// </summary>
-        public Command CommandAddNewUser { get; private set; }
-
-        // TODO: Move code below to constructor
-
-        // TODO: Move code above to constructor
-
-        /// <summary>
-        /// Method to check whether the CommandAddNewUser command can be executed.
-        /// </summary>
-        /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-        private bool OnCommandAddNewUserCanExecute()
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Method to invoke when the CommandAddNewUser command is executed.
-        /// </summary>
-        private void OnCommandAddNewUserExecute()
-        {
-            MainWindowViewModel main = this.ParentViewModel as MainWindowViewModel;
-            main.CommandAddNewUser.Execute();
-        }
+      
         #endregion Commands
-
-
 
         protected override async Task Initialize()
         {

@@ -140,8 +140,7 @@ namespace Data.Session
            //// System.Diagnostics.Debug.WriteLine("db path is {0}", _sessionFactory.GetCurrentSession().Connection.Database);
         }
         public static ISession OpenSession()
-        {
-           
+        {           
             return SessionFactory.OpenSession();
             throw new Exception("Open Session Error");
         }

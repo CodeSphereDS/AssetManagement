@@ -2,7 +2,6 @@
 using Catel.Data;
 using System.Threading.Tasks;
 using Data.Model;
-using Asset_Management_System.ViewModels.IReports;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;

@@ -1,65 +1,35 @@
 ﻿using Catel.MVVM;
 using System.Threading.Tasks;
 using Catel.Data;
+using Data.Model;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using Data.Repository;
+using Data.Model;
+using Data.Session;
+using NHibernate;
+using System;
 
 
 namespace Asset_Management_System.ViewModels.Flyouts
 {
 
-
+    
     public class AddNewUserViewModel : ViewModelBase
     {
+        Repository<User> _repository;
         public AddNewUserViewModel()
-        {
+        {          
+            User = new User();
             ButtonSave = new Command(OnButtonSaveExecute, OnButtonSaveCanExecute);
             ButtonCancel = new Command(OnButtonCancelExecute, OnButtonCancelCanExecute);
             FlyoutClose = new Command(OnFlyoutCloseExecute);
 
+            if (Userlevels == null)
+                Userlevels = new List<string> { "User", "Supervisor" , "Admin" };         
+          
         }
 
-        /// <summary>
-        /// Gets or sets the property value.
-        /// </summary>
-        public string Username
-        {
-            get { return GetValue<string>(UsernameProperty); }
-            set { SetValue(UsernameProperty, value); }
-        }
-
-        /// <summary>
-        /// Register the Username property so it is known in the class.
-        /// </summary>
-        public static readonly PropertyData UsernameProperty = RegisterProperty("Username", typeof(string), null, (sender, e) => ((AddNewUserViewModel)sender).OnUsernameChanged());
-
-        /// <summary>
-        /// Called when the Username property has changed.
-        /// </summary>
-        private void OnUsernameChanged()
-        {
-            // TODO: Implement logic
-        }
-
-        /// <summary>
-        /// Gets or sets the property value.
-        /// </summary>
-        public string Password
-        {
-            get { return GetValue<string>(PasswordProperty); }
-            set { SetValue(PasswordProperty, value); }
-        }
-
-        /// <summary>
-        /// Register the Password property so it is known in the class.
-        /// </summary>
-        public static readonly PropertyData PasswordProperty = RegisterProperty("Password", typeof(string), null, (sender, e) => ((AddNewUserViewModel)sender).OnPasswordChanged());
-
-        /// <summary>
-        /// Called when the Password property has changed.
-        /// </summary>
-        private void OnPasswordChanged()
-        {
-            // TODO: Implement logic
-        }
         public override string Title { get { return "New User"; } }
 
         protected override async Task Initialize()
@@ -70,24 +40,105 @@ namespace Asset_Management_System.ViewModels.Flyouts
         }
 
         protected override async Task Close()
-        {
-            // TODO: unsubscribe from events here
-
-            // MainWindowViewModel main = this.ParentViewModel as MainWindowViewModel;
-            // main.CommandShowLogin.Execute();
+        {           
             await base.Close();
+        }
+
+        #region properties
+
+        public List<string> Userlevels { get; set; }
+
+        /// <summary>
+        /// Gets or sets the property value.
+        /// </summary>
+        [Model]
+        public User User
+        {
+            get { return GetValue<User>(UserProperty); }
+            private set { SetValue(UserProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the User property so it is known in the class.
+        /// </summary>
+        public static readonly PropertyData UserProperty = RegisterProperty("User", typeof(User));
+
+       
+        /// <summary>
+        /// Gets or sets the property value Username.
+        /// </summary>
+        [ViewModelToModel("User")]
+        public string Username
+        {
+            get { return GetValue<string>(UsernameProperty); }
+            set { SetValue(UsernameProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the Username property so it is known in the class.
+        /// </summary>
+        public static readonly PropertyData UsernameProperty = RegisterProperty("Username", typeof(string));
+
+        /// <summary>
+        /// Gets or sets the property value.
+        /// </summary>
+        [ViewModelToModel("User")]
+        public string Password
+        {
+            get { return GetValue<string>(PasswordProperty); }
+            set { SetValue(PasswordProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the Password property so it is known in the class.
+        /// </summary>
+        public static readonly PropertyData PasswordProperty = RegisterProperty("Password", typeof(string));
+
+        /// <summary>
+        /// Gets or sets the property value.
+        /// </summary>
+        [ViewModelToModel("User")]
+        public bool UserIsAuthenticated
+        {
+            get { return GetValue<bool>(UserIsAuthenticatedProperty); }
+            set { SetValue(UserIsAuthenticatedProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the UserIsAuthenticated property so it is known in the class.
+        /// </summary>
+        public static readonly PropertyData UserIsAuthenticatedProperty = RegisterProperty("UserIsAuthenticated", typeof(bool));
+
+        /// <summary>
+        /// Gets or sets the property value.
+        /// </summary>
+        [ViewModelToModel("User")]
+        public int Userlevel
+        {
+            get { return GetValue<int>(UserlevelProperty); }
+            set { SetValue(UserlevelProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the Userlevel property so it is known in the class.
+        /// </summary>
+        public static readonly PropertyData UserlevelProperty = RegisterProperty("Userlevel", typeof(int),null,
+            (sender,e)=>((AddNewUserViewModel)sender).OnUserlevelChanged());
+       
+        private void OnUserlevelChanged()
+        {
 
         }
 
+        #endregion properties
+
+
+        #region commands
         /// <summary>
         /// Gets the ButtonSave command.
         /// </summary>
         public Command ButtonSave { get; private set; }
-
-        // TODO: Move code below to constructor
-
-        // TODO: Move code above to constructor
-
+        
         /// <summary>
         /// Method to check whether the ButtonSave command can be executed.
         /// </summary>
@@ -102,22 +153,24 @@ namespace Asset_Management_System.ViewModels.Flyouts
         /// </summary>
         private void OnButtonSaveExecute()
         {
-            //DataAccessLayer.Model.Role role = new DataAccessLayer.Model.Role();
-            //role.Username = Username;
-            //role.Password = Password;
-            //DataAccessLayer.Repository.RRole rrole = new DataAccessLayer.Repository.RRole();
-            //rrole.SaveRole(role);
-            //MainWindowViewModel main = this.ParentViewModel as MainWindowViewModel;
-            //main.CommandShowLogin.Execute();
+            try
+            {
+                using(ISession session = NHibernateSession.OpenSession())
+                {
+                    _repository = new Repository<User>(session);
+                    _repository.SaveOrUpdate(User);
+                }
+            }
+
+            catch (Exception ex) { }
+          
+            var main = this.ParentViewModel as MainWindowViewModel;
+            main.ShowFlyout = false;
         }
         /// <summary>
         /// Gets the ButtonCancel command.
         /// </summary>
         public Command ButtonCancel { get; private set; }
-
-        // TODO: Move code below to constructor
-
-        // TODO: Move code above to constructor
 
         /// <summary>
         /// Method to check whether the ButtonCancel command can be executed.
@@ -133,18 +186,14 @@ namespace Asset_Management_System.ViewModels.Flyouts
         /// </summary>
         private void OnButtonCancelExecute()
         {
-            MainWindowViewModel main = this.ParentViewModel as MainWindowViewModel;
-            main.CommandShowLogin.Execute();
+            var mainwindow = this.ParentViewModel as MainWindowViewModel;
+            mainwindow.ShowFlyout = false;
         }
 
         /// <summary>
         /// Gets the FlyoutClose command.
         /// </summary>
         public Command FlyoutClose { get; private set; }
-
-        // TODO: Move code below to constructor
-
-        // TODO: Move code above to constructor
 
         /// <summary>
         /// Method to invoke when the FlyoutClose command is executed.
@@ -153,5 +202,7 @@ namespace Asset_Management_System.ViewModels.Flyouts
         {
             this.Close();
         }
+
+        #endregion
     }
 }
