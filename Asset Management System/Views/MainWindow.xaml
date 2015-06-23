@@ -32,10 +32,10 @@
             </DataTemplate>
             <!-- Flyouts-->
             <DataTemplate DataType="{x:Type vmFlyouts:LoginViewModel}">
-                <vFlyouts:Login DataContext="{Binding User}"/>
+                <vFlyouts:Login/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vmFlyouts:AddNewUserViewModel}">
-                <vFlyouts:AddNewUser DataContext="{Binding FlyoutContent}"/>
+                <vFlyouts:AddNewUser DataContext="{Binding}"/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vmFlyouts:AppSettingsViewModel}">
                 <vFlyouts:AppSettings DataContext="{Binding FlyoutContent}"/>
@@ -54,7 +54,7 @@
         </ResourceDictionary>
     </CSClasses:CSWindow.Resources>
     <CSClasses:CSWindow.Flyouts>
-        <CSClasses:CSUserControlFlyoutsControl x:Name="Flyout" IsEnabled="{Binding IsBusy}">
+        <CSClasses:CSUserControlFlyoutsControl x:Name="Flyout" IsEnabled="{Binding FlyoutIsBusy,Converter={catel:BooleanToOppositeBooleanConverter}}">
             <CSClasses:CSUserControlFlyouts Header="{Binding FlyoutContent.Title}" CloseCommand="{Binding CommandCloseFlyout}"                                            
        Theme="Adapt"  IsOpen="{Binding ShowFlyout}" IsModal="True" 
                                                    Position="Right" Content="{Binding Path=FlyoutContent}">
@@ -64,19 +64,19 @@
     <CSClasses:CSWindow.RightWindowCommands>
         <CSClasses:CSWindowCommands IsEnabled="{Binding IsBusy,Converter={catel:BooleanToOppositeBooleanConverter}}" ShowSeparators="True">
             <!--Notification-->
-            <Button Command="{Binding CommandShowNotifications}" >
+            <Button Command="{Binding CommandAddNewUser}" IsEnabled="{Binding UserIsAuthenticated}" >
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20"
                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill"
-                         Visual="{StaticResource appbar_warning_circle}" />
+                         Visual="{StaticResource appbar_user_add}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </StackPanel>
             </Button>
             <!--Refresh-->
-            <Button Command="{Binding CommandRefreshMainContent}" >
+            <Button Command="{Binding CommandRefreshMainContent}" IsEnabled="{Binding UserIsAuthenticated}" >
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20"
                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -124,7 +124,7 @@
                 </StackPanel>
             </Button>
             <!--Settings-->
-            <Button Command="{Binding CommandOpenSettings}">
+            <Button Command="{Binding CommandOpenSettings}" IsEnabled="{Binding UserIsAuthenticated}">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20"
                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -139,7 +139,7 @@
                 </StackPanel>
             </Button>
             <!--About-->
-            <Button Command="{Binding CommandShowAbout}">
+            <Button Command="{Binding CommandShowAbout}" IsEnabled="{Binding UserIsAuthenticated}">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20"
                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -166,18 +166,16 @@
                 <Menu.Resources>
                     <Style TargetType="{x:Type MenuItem}">
                         <Setter Property="Margin" Value="5,0" />
-                        <Setter Property="Padding" Value="10,0" />
+                        <!--<Setter Property="Padding" Value="10,0" />-->
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
                         <!--<Setter Property="Width" Value="50"/>-->
                     </Style>
                 </Menu.Resources>
-                <MenuItem Header="_File" >
-                    <MenuItem Header="_Save as" Padding="3,0"/>
+                <MenuItem Header="_File" >                    
                     <MenuItem Header="_Close" Command="{Binding CommandCloseWindow}"/>
                 </MenuItem>
                 <MenuItem Header="_Reports">
-                    <MenuItem Header="General List" Padding="3,0" Command="{Binding CommandShowAssetList}"/>
-                    <MenuItem Header="_Asset List" Padding="3,0" Command="{Binding CommandShowAssetList}" />
-                    <MenuItem Header="Asset Request" Padding="3,0" Command="{Binding CommandShowAssetList}"/>
+                    <MenuItem Header="General List"  Command="{Binding CommandShowAssetList}"/>                  
                    
                 </MenuItem>
             </Menu>

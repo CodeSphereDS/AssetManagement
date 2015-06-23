@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 using Catel.MVVM.Tasks;
 using Asset_Management_System.ViewModels;
 using Asset_Management_System.ViewModels.Reports;
+using Asset_Management_System.ViewModels.Flyouts;
 using Data.Model;
 using Catel.Messaging;
+using Data.Repository;
+
 
 namespace Asset_Management_System.ViewModels
 {
@@ -20,7 +23,7 @@ namespace Asset_Management_System.ViewModels
         private Reports.AssetMasterListViewModel _AssetMasterListViewModel;
         private IMessageMediator _messagemediator;
         private IMessageService _messageservice;
-        private IUIVisualizerService _uivisualizer;
+        private IUIVisualizerService _uivisualizer;     
 
         #region constructor
         public MainWindowViewModel()
@@ -37,14 +40,19 @@ namespace Asset_Management_System.ViewModels
 
             CommandCloseWindow = new Command(OnCommandCloseWindowExecute);
 
+            //Resolve services 
             var dependencyResolver = this.GetDependencyResolver();
             _messageservice= dependencyResolver.Resolve<IMessageService>();
             _messagemediator = dependencyResolver.Resolve<IMessageMediator>();
             _uivisualizer = dependencyResolver.Resolve<IUIVisualizerService>();
 
+            //register messagemediator service
             _messagemediator.Register<bool>(this, MainWindowIsBusy, "MainWindowIsBusy");
-            
-            MainContent = new Reports.AssetManagementSystemBlankViewModel();
+            _messagemediator.Register<bool>(this, SetUserIsAuthenticated, "SetUserIsAuthenticated");
+            _messagemediator.Register<bool>(this, MainWindowFlyoutIsBusy, "MainWindowFlyoutIsBusy");
+
+            //default values
+           MainContent = new Reports.AssetManagementSystemBlankViewModel();         
         }
 
         #endregion constructor
@@ -79,6 +87,7 @@ namespace Asset_Management_System.ViewModels
         /// Register the Username property so it is known in the class.
         /// </summary>
         public static readonly PropertyData UsernameProperty = RegisterProperty("Username", typeof(string));
+       
 
         /// <summary>
         /// Gets or sets the property value.
@@ -93,7 +102,18 @@ namespace Asset_Management_System.ViewModels
         /// <summary>
         /// Register the UserIsAuthenticated property so it is known in the class.
         /// </summary>
-        public static readonly PropertyData UserIsAuthenticatedProperty = RegisterProperty("UserIsAuthenticated", typeof(bool));
+        public static readonly PropertyData UserIsAuthenticatedProperty = RegisterProperty("UserIsAuthenticated", typeof(bool), null,(sender, e) => ((MainWindowViewModel)sender).OnUserIsAuthenticatedChanged());
+
+        private void OnUserIsAuthenticatedChanged()
+        {
+            if (!UserIsAuthenticated)
+            {
+                CommandShowLogin.Execute();
+            }
+          
+        }
+
+      
 
         /// <summary>
         /// Gets or sets the property value.
@@ -189,7 +209,21 @@ namespace Asset_Management_System.ViewModels
         /// <summary>
         /// Register the IsBusy property so it is known in the class.
         /// </summary>
-        public static readonly PropertyData IsBusyProperty = RegisterProperty("IsBusy", typeof(bool), null);
+        public static readonly PropertyData IsBusyProperty = RegisterProperty("IsBusy", typeof(bool), false);
+
+        /// <summary>
+        /// Gets or sets the property value.
+        /// </summary>
+        public bool FlyoutIsBusy
+        {
+            get { return GetValue<bool>(FlyoutIsBusyProperty); }
+            set { SetValue(FlyoutIsBusyProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the FlyoutIsBusy property so it is known in the class.
+        /// </summary>
+        public static readonly PropertyData FlyoutIsBusyProperty = RegisterProperty("FlyoutIsBusy", typeof(bool), null);
 
         #endregion Properties
 
@@ -304,19 +338,19 @@ namespace Asset_Management_System.ViewModels
         /// </summary>     
         private void OnCommandShowLoginExecute()
         {
-            if (User == null) User = new User { Firstname = "", Lastname = "", Password = "" };
+            if (User == null) User = new User { Username="", Password = "" };
             if (UserIsAuthenticated)
             {
-                var viewModel = new Windows.SignOutViewModel();
-                var dependencyResolver = this.GetDependencyResolver();
-                var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
-                UserIsAuthenticated = (bool)!uiVisualizerService.ShowDialog(viewModel);
-                if (!UserIsAuthenticated) User = null;
+                var viewModel = new Windows.SignOutViewModel();               
+               if(_uivisualizer.ShowDialog(viewModel)==true)
+               {
+                   User = null;
+                   User.UserIsAuthenticated = false;
+               }               
             }
             else if (!UserIsAuthenticated)
             {
                 ShowFlyout = false;
-                System.Diagnostics.Debug.WriteLine(string.Format("User is Authenticated = {0}", User.UserIsAuthenticated.ToString()));
                 var _loginViewModel = new Flyouts.LoginViewModel(User);
                 FlyoutContent = _loginViewModel;
                 ShowFlyout = true;
@@ -414,10 +448,8 @@ namespace Asset_Management_System.ViewModels
         private void OnCommandAddNewUserExecute()
         {
             ShowFlyout = false;
-
-            var _addNewUserViewModel = new Flyouts.AddNewUserViewModel();
-
-            FlyoutContent = _addNewUserViewModel;
+            var _addNewUserViewModel = new AddNewUserViewModel();            
+            FlyoutContent = _addNewUserViewModel;           
             ShowFlyout = true;
         }
       
@@ -432,15 +464,15 @@ public Command CommandCloseWindow { get; private set; }
 /// </summary>
 private async void OnCommandCloseWindowExecute()
 {
-   
+
     //if (await _messageservice.Show("Are you sure you want to do this?", "Are you sure?", MessageButton.YesNo) == MessageResult.Yes)
     //{
     //    this.CloseViewModel(true);
     //}
 
-    if(await _uivisualizer.ShowDialogAsync<ViewModels.Windows.ConfirmWindowViewModel>()==true)
+    if (await _uivisualizer.ShowDialogAsync<ViewModels.Windows.ConfirmWindowViewModel>() == true)
     {
-        await this.Close();
+        await this.CloseViewModel(true);
     }
    
 }
@@ -450,7 +482,7 @@ private async void OnCommandCloseWindowExecute()
         protected override async Task Initialize()
         {
             await base.Initialize();
-
+          
             // TODO: subscribe to events here
         }
 
@@ -460,6 +492,7 @@ private async void OnCommandCloseWindowExecute()
             await base.Close();
         }
 
+     
         public void LoadContent(IViewModel Content)
         {
             var r = this.GetDependencyResolver();
@@ -468,11 +501,30 @@ private async void OnCommandCloseWindowExecute()
         }
 
         [MessageRecipient(Tag = "MainWindowIsBusy")]
-        public void MainWindowIsBusy(bool busy)
+        private void MainWindowIsBusy(bool busy)
         {
                   
             IsBusy = busy;
         }
+
+        [MessageRecipient(Tag = "SetUserIsAuthenticated")]
+        private void SetUserIsAuthenticated(bool value)
+        {
+            UserIsAuthenticated = value;
+            if (!UserIsAuthenticated)
+            {
+                CommandShowLogin.Execute();
+
+            }
+        }
+
+        [MessageRecipient(Tag = "MainWindowFlyoutIsBusy")]
+        private void MainWindowFlyoutIsBusy(bool busy)
+        {
+
+            FlyoutIsBusy = busy;
+        }
+
         #endregion Methods    
     }
 }

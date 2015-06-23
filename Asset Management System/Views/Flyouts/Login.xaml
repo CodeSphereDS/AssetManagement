@@ -20,11 +20,7 @@
         <catel:StackGrid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="1*"/>
-        </catel:StackGrid.ColumnDefinitions>
-        <catel:EmptyCell/>
-        <Button Width="40" Margin="0,0,0,30" HorizontalAlignment="Right" Command="{Binding CommandAddNewUser}">
-            <Image Source="/Resources/Images/add-user.png"/>
-        </Button>
+        </catel:StackGrid.ColumnDefinitions>               
         <TextBlock Text="Username" Margin="10"/>
         <catel:WatermarkTextBox Text="{Binding Username,UpdateSourceTrigger=PropertyChanged}" Watermark="Username" Margin="10,10"/>
         <TextBlock Text="Password" Margin="10"/>
